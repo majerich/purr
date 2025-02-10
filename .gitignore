@@ -1,0 +1,11 @@
+# Logs
+*.log
+
+# Backup files
+*.bak
+*~
+*.swp
+
+# OS specific
+.DS_Store
+.directory
