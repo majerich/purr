@@ -51,15 +51,27 @@ for lib in backup mirrors permissions logging utils; do
 done
 
 function main() {
+  # Set restrictive umask
+  umask 077
+
+  # Parse command line options first
   parse_options "$@" || return "${E_GENERAL}"
+
+  # Handle non-sudo requiring operations
+  if ((SHOW_HELP)); then
+    show_help
+    return "${E_SUCCESS}"
+  fi
 
   if ((SHOW_BACKUPS)); then
     show_backups
-    return $?
+    return "${E_SUCCESS}"
   fi
 
+  # Verify mirror handler before requesting sudo
   check_mirror_handler || return "${E_HANDLER}"
 
+  # Now that we know we need sudo, verify access
   if ! sudo -v; then
     err "Sudo access required"
     return "${E_SUDO}"

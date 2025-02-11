@@ -2,6 +2,30 @@
 #
 # Utility functions for purr
 
+# Function: execute_operation
+# Description: Executes the requested operation based on CLI flags
+# Returns: Operation status code
+function execute_operation() {
+  if ((RESTORE_MODE)); then
+    restore_backup "${RESTORE_DATE}"
+    return $?
+  fi
+
+  if ((CONFIG_BACKUP)); then
+    backup
+    return $?
+  fi
+
+  if ((UNDO_MODE)); then
+    undo_changes
+    return $?
+  fi
+
+  # Default operation: update mirrors
+  update_mirrors
+  return $?
+}
+
 # Function: cleanup_handler
 # Description: Handles cleanup on script exit
 # Returns: Original exit code

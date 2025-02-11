@@ -7,8 +7,14 @@
 # Outputs: Populates FOUND_REPOS array
 # Returns: 0 on success
 function detect_repos() {
+  if [[ ! -d "${PURR_MIRROR_PATH}" ]]; then
+    err "Mirror path not found: ${PURR_MIRROR_PATH}"
+    return "${E_MIRRORS}"
+  fi
+  }
+  
   mapfile -t FOUND_REPOS < <(
-    find "${MIRROR_PATH}" -type f -name "*mirrorlist" \
+    find "${PURR_MIRROR_PATH}" -type f -name "*mirrorlist" \
       -exec basename {} \; | sed 's/-mirrorlist//'
   )
 }
@@ -75,6 +81,28 @@ function check_mirror_handler() {
       return "${E_HANDLER}"
     fi
   done
+  return "${E_SUCCESS}"
+}
+
+# Function: update_mirrors
+# Description: Updates mirror lists for all detected repositories
+# Returns: 0 on success, non-zero on error
+function update_mirrors() {
+  local temp_file
+
+  detect_repos
+
+  for repo in "${FOUND_REPOS[@]}"; do
+    temp_file="$(mktemp)"
+    TMP_FILES+=("${temp_file}")
+
+    msg "Generating mirrors for ${repo}"
+    generate_mirrors "${temp_file}" "${repo}" || return "${E_MIRRORS}"
+
+    msg "Updating ${repo} mirror list"
+    update_files "${repo}-mirrorlist" "${temp_file}" || return "${E_MIRRORS}"
+  done
+
   return "${E_SUCCESS}"
 }
 
