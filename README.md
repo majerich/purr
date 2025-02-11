@@ -8,12 +8,15 @@ PURR requires [rate-mirrors](https://github.com/westandskif/rate-mirrors) to be 
 
 ## Features
 
-- Automatic mirror rating and optimization
-- Backup management for mirror lists
-- Support for multiple repositories
-- Shell-agnostic implementation (works with bash and zsh)
-- Logging capabilities
-- Quiet mode operation
+- Automatic mirror optimization using rate-mirrors
+- Comprehensive backup and restore functionality
+- Automatic backup creation before updates
+- Undo capability for last mirror update
+- Detailed backup metadata including system information
+- Support for multiple repository types
+- Secure file handling with proper permissions
+- Extensive error handling and logging
+- Compatible with both bash and zsh shells
 
 ## Installation
 
@@ -29,15 +32,19 @@ sudo cp src/purr.sh /usr/local/lib/
 purr [-q] [-l]          # Update mirrors (quiet/logging optional)
 purr -s                 # Show available backups
 purr -r BACKUP_DATE     # Restore specific backup
-```
+purr -c                 # Create backup of system mirrors and configuration
+purr -u                 # Undo last mirror update
 
 ### Options
 
 - `-q`: Quiet mode, suppress stdout
-- `-l`: Enable logging to /var/log/rate-mirror.log
+- `-l`: Enable additional file logging to /var/log/rate-mirror.log in RFC5424 format (Note: All operations are logged to journald regardless of this flag)
 - `-s`: Show available backups
 - `-r`: Restore backup from specified date
+- `-c`: Create backup of system mirrors and configuration
+- `-u`: Undo last mirror update
 
 ## License
 
 MIT License - See LICENSE file for details
+```
