@@ -1,10 +1,19 @@
-# Logs
-*.log
+# Development environment directories
+/var/
+/etc/
 
 # Backup files
 *.bak
 *~
 *.swp
+*.tar.gz
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*~
 
 # OS specific
 .DS_Store

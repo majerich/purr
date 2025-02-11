@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# Development environment cleanup for purr
+# Source this file from repository root: source dev.cleanup
+
+# Get repository root directory
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Verify we're in the correct repository
+if [[ ! -f "${REPO_ROOT}/src/bin/purr" ]]; then
+    echo "Error: Not in purr repository"
+    return 1
+fi
+
+# Display initial state
+echo "Starting cleanup..."
+echo "Current development paths:"
+echo "  var/: $(du -sh ${REPO_ROOT}/var 2>/dev/null || echo 'not present')"
+echo "  etc/: $(du -sh ${REPO_ROOT}/etc 2>/dev/null || echo 'not present')"
+
+# Remove development directories with status
+rm -rf "${REPO_ROOT}/var" && echo "✓ Removed var/"
+rm -rf "${REPO_ROOT}/etc" && echo "✓ Removed etc/"
+
+# Clean any temporary files
+find "${REPO_ROOT}" -type f -name "*.tmp" -delete
+find "${REPO_ROOT}" -type f -name "*~" -delete
+
+# Show current environment variables before unsetting
+echo -e "\nClearing environment variables:"
+for var in PURR_LIB_PATH PURR_BACKUP_PATH PURR_LOG_FILE PURR_MIRROR_PATH PURR_MAX_BACKUPS; do
+    if [[ -n "${!var}" ]]; then
+        echo "  ${var}=${!var}"
+        unset "${var}" && echo "  ✓ Unset ${var}"
+    fi
+done
+
+# Verify cleanup
+echo -e "\nVerifying cleanup:"
+for dir in var etc; do
+    [[ ! -d "${REPO_ROOT}/${dir}" ]] && echo "✓ ${dir}/ verified removed"
+done
+
+for var in PURR_LIB_PATH PURR_BACKUP_PATH PURR_LOG_FILE PURR_MIRROR_PATH PURR_MAX_BACKUPS; do
+    [[ -z "${!var}" ]] && echo "✓ ${var} verified unset"
+done
+
+echo -e "\nDevelopment environment reset complete"
+
+# vim: fenc=utf-8:ts=2:sw=2:sta:et:sts=2:fdm=marker:ai:ft=sh:tw=80:
+# vim: cc=80:commentstring=#%s:
+

@@ -21,11 +21,12 @@
 #   -u: Undo last mirror update
 #   -h: Display this help message
 
-# Source function libraries
-for lib in backup mirrors permissions logging utils; do
-  # shellcheck source=/dev/null
-  source "/usr/local/lib/purr/${lib}.sh"
-done
+# Environment variable overrides for all configurable paths and values
+readonly PURR_LIB_PATH="${PURR_LIB_PATH:-/usr/local/lib/purr}"
+readonly PURR_BACKUP_PATH="${PURR_BACKUP_PATH:-/var/cache/rate-mirror}"
+readonly PURR_LOG_FILE="${PURR_LOG_FILE:-/var/log/rate-mirror.log}"
+readonly PURR_MIRROR_PATH="${PURR_MIRROR_PATH:-/etc/pacman.d}"
+readonly PURR_MAX_BACKUPS="${PURR_MAX_BACKUPS:-5}"
 
 # Error codes
 readonly E_SUCCESS=0
@@ -38,21 +39,27 @@ readonly E_MIRRORS=6
 readonly E_PERMISSION=7
 readonly E_VALIDATION=8
 
+# Source function libraries
+for lib in backup mirrors permissions logging utils; do
+  # shellcheck source=/dev/null
+  source "${PURR_LIB_PATH}/${lib}.sh"
+done
+
 function main() {
   parse_options "$@" || return "${E_GENERAL}"
-  
-  if (( SHOW_BACKUPS )); then
+
+  if ((SHOW_BACKUPS)); then
     show_backups
     return $?
   fi
-  
+
   check_mirror_handler || return "${E_HANDLER}"
-  
+
   if ! sudo -v; then
     err "Sudo access required"
     return "${E_SUDO}"
   fi
-  
+
   execute_operation
 }
 
