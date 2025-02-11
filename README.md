@@ -1,50 +1,85 @@
-# PURR - Pacman Ultra Rate Ranker
+# Purr
 
-PURR is a wrapper function for [rate-mirrors](https://github.com/westandskif/rate-mirrors) that provides enhanced mirror management capabilities for Arch Linux systems.
+Purr is a mirror list management tool for Arch Linux based systems.
 
 ## Dependencies
 
-PURR requires [rate-mirrors](https://github.com/westandskif/rate-mirrors) to be installed on your system. Rate-mirrors is the core tool that performs the actual mirror speed testing and ranking. PURR extends its functionality by adding automated backup management, multi-repository support, and enhanced logging capabilities.
-
-## Features
-
-- Automatic mirror optimization using rate-mirrors
-- Comprehensive backup and restore functionality
-- Automatic backup creation before updates
-- Undo capability for last mirror update
-- Detailed backup metadata including system information
-- Support for multiple repository types
-- Secure file handling with proper permissions
-- Extensive error handling and logging
-- Compatible with both bash and zsh shells
+* rate-mirrors
+* jq (for JSON processing)
+* sudo privileges
+* systemd (for service checks)
 
 ## Installation
 
-```bash
-git clone https://github.com/majerich/purr.git
-cd purr
-sudo cp src/purr.sh /usr/local/lib/
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/majerich/purr.git
+   cd purr
+   ```
+
+2. Run the installation script:
+   ```bash
+   ./install.sh
+   ```
+
+3. Verify installation:
+   ```bash
+   purr -h
+   ```
 
 ## Usage
 
+### Basic Mirror Update
+
+Update mirrors with default settings:
 ```bash
-purr [-q] [-l]          # Update mirrors (quiet/logging optional)
-purr -s                 # Show available backups
-purr -r BACKUP_DATE     # Restore specific backup
-purr -c                 # Create backup of system mirrors and configuration
-purr -u                 # Undo last mirror update
+purr
+```
 
-### Options
+### Backup Operations
 
-- `-q`: Quiet mode, suppress stdout
-- `-l`: Enable additional file logging to /var/log/rate-mirror.log in RFC5424 format (Note: All operations are logged to journald regardless of this flag)
-- `-s`: Show available backups
-- `-r`: Restore backup from specified date
-- `-c`: Create backup of system mirrors and configuration
-- `-u`: Undo last mirror update
+Create a backup:
+```bash
+purr -c
+```
+
+Show available backups:
+```bash
+purr -s
+```
+
+Restore from backup:
+```bash
+purr -r YYYYMMDD_HHMMSS
+```
+
+### Logging
+
+Enable file logging:
+```bash
+purr -l
+```
+
+Quiet mode:
+```bash
+purr -q
+```
+
+## Configuration
+
+* Backup Path: `/var/cache/rate-mirror`
+* Log File: `/var/log/rate-mirror.log`
+* Mirror Path: `/etc/pacman.d``
+* Maximum Backups: 5
 
 ## License
 
-MIT License - See LICENSE file for details
-```
+MIT
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
