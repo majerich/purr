@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
 # Development environment configuration for purr
-# Source this file from repository root: source dev.env
+# Source this file from repository root: source dev/env
 
 # Get repository root directory
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 # Set development paths relative to repository root
-export PURR_LIB_PATH="${REPO_ROOT}/src/lib/purr"
+export PURR_LIB_PATH="${REPO_ROOT}/src/lib"
 export PURR_BACKUP_PATH="${REPO_ROOT}/var/cache/rate-mirror"
 export PURR_LOG_FILE="${REPO_ROOT}/var/log/rate-mirror.log"
 export PURR_MIRROR_PATH="${REPO_ROOT}/etc/pacman.d"
@@ -18,6 +18,9 @@ mkdir -p "${PURR_BACKUP_PATH}"
 mkdir -p "$(dirname "${PURR_LOG_FILE}")"
 mkdir -p "${PURR_MIRROR_PATH}"
 
+# Copy system pacman.d configuration
+cp -r /etc/pacman.d/* "${PURR_MIRROR_PATH}/"
+
 # Display current configuration
 echo "Development environment configured:"
 echo "  PURR_LIB_PATH     = ${PURR_LIB_PATH}"
@@ -25,3 +28,7 @@ echo "  PURR_BACKUP_PATH  = ${PURR_BACKUP_PATH}"
 echo "  PURR_LOG_FILE     = ${PURR_LOG_FILE}"
 echo "  PURR_MIRROR_PATH  = ${PURR_MIRROR_PATH}"
 echo "  PURR_MAX_BACKUPS = ${PURR_MAX_BACKUPS}"
+echo "  Copied system pacman.d configuration"
+
+# vim: fenc=utf-8:ts=2:sw=2:sta:et:sts=2:fdm=marker:ai:ft=sh:tw=80:
+# vim: cc=80:commentstring=#%s:

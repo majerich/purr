@@ -39,10 +39,15 @@ readonly E_MIRRORS=6
 readonly E_PERMISSION=7
 readonly E_VALIDATION=8
 
-# Source function libraries
+# Source function libraries with path verification
 for lib in backup mirrors permissions logging utils; do
+  lib_path="${PURR_LIB_PATH}/${lib}.sh"
+  if [[ ! -f "${lib_path}" ]]; then
+    printf "Error: Required library not found: %s\n" "${lib_path}" >&2
+    exit 1
+  fi
   # shellcheck source=/dev/null
-  source "${PURR_LIB_PATH}/${lib}.sh"
+  source "${lib_path}"
 done
 
 function main() {
