@@ -11,8 +11,7 @@ function detect_repos() {
     err "Mirror path not found: ${PURR_MIRROR_PATH}"
     return "${E_MIRRORS}"
   fi
-  }
-  
+
   mapfile -t FOUND_REPOS < <(
     find "${PURR_MIRROR_PATH}" -type f -name "*mirrorlist" \
       -exec basename {} \; | sed 's/-mirrorlist//'

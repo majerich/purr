@@ -2,6 +2,10 @@
 /var/
 /etc/
 
+# ShellSpec
+.shellspec
+/spec/spec_helper.sh
+
 # Backup files
 *.bak
 *~
